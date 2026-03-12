@@ -118,7 +118,7 @@ export default function Hospitals() {
   console.log("Location:", lat, lng);
 
     const url =
-    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=hospital&key=AIzaSyDWFrjiG32UW6JkScXWue7JaZKOgixdDfM`;
+  `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=hospital&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY}`;
 
     const res = await fetch(url);
     const data = await res.json();

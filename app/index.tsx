@@ -1,9 +1,10 @@
 
-import { ScrollView, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import { ScrollView, StyleSheet, Text } from "react-native";
 
-import Card from "../components/Card";
 import ActionButton from "../components/ActionButton";
+import Card from "../components/Card";
+// import MedicalQRScreen from "./MedicalQRScreen";
 
 export default function Home() {
 
@@ -25,7 +26,17 @@ export default function Home() {
         color="#39be3b"
         onPress={() => router.push("/scanner")}
       />
+      <ActionButton
+        title="Generate Medical QR"
+        color="#8B5CF6" // Gave it a nice purple color so it stands out
+        onPress={() => router.push("/MedicalQRScreen")}
+      />
 
+      <ActionButton
+        title="Create Emergency Report"
+        color="#6480b8"
+        onPress={() => router.push("/report")}
+      />
       <ActionButton
         title="Create Emergency Report"
         color="#6480b8"
