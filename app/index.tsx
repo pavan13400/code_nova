@@ -1,7 +1,7 @@
 
+import 'react-native-get-random-values';
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text } from "react-native";
-
 import ActionButton from "../components/ActionButton";
 import Card from "../components/Card";
 // import MedicalQRScreen from "./MedicalQRScreen";
@@ -37,12 +37,6 @@ export default function Home() {
         color="#6480b8"
         onPress={() => router.push("/report")}
       />
-      <ActionButton
-        title="Create Emergency Report"
-        color="#6480b8"
-        onPress={() => router.push("/report")}
-      />
-
       <ActionButton
         title="Patient Medical ID"
         color="#1F2A40"

@@ -1,10 +1,9 @@
-import * as Location from "expo-location";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-
 export default function Hospitals() {
   
+  const { patient } = useLocalSearchParams();
   const router = useRouter();
   const [hospitals, setHospitals] = useState([]);
   const [search, setSearch] = useState("");
@@ -101,33 +100,81 @@ export default function Hospitals() {
 
   //   setHospitals(data.results);
   // };
+  // const fetchHospitals = async () => {
+
+  // const { status } = await Location.requestForegroundPermissionsAsync();
+
+  // if (status !== "granted") {
+  //   alert("Location permission required");
+  //   return;
+  // }
+
+  // const location = await Location.getCurrentPositionAsync({});
+
+  // const lat = location.coords.latitude;
+  // const lng = location.coords.longitude;
+
+  // console.log("Location:", lat, lng);
+
+  //   const url =
+  // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=hospital&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY}`;
+
+  //   const res = await fetch(url);
+  //   const data = await res.json();
+
+  //   console.log("API DATA:", data);
+
+  //   setHospitals(data.results || []);
+  // };
   const fetchHospitals = async () => {
 
-  const { status } = await Location.requestForegroundPermissionsAsync();
+  // Demo hospital list
+  const demoHospitals = [
+      {
+        place_id: "1",
+        name: "Apollo Hospital",
+        vicinity: "Jubilee Hills, Hyderabad"
+      },
+      {
+        place_id: "2",
+        name: "Yashoda Hospital",
+        vicinity: "Secunderabad, Hyderabad"
+      },
+      {
+        place_id: "3",
+        name: "CARE Hospital",
+        vicinity: "Banjara Hills, Hyderabad"
+      },
+      {
+        place_id: "4",
+        name: "AIG Hospital",
+        vicinity: "Gachibowli, Hyderabad"
+      },
+      {
+        place_id: "5",
+        name: "KIMS Hospital",
+        vicinity: "Kondapur, Hyderabad"
+      },
+      {
+        place_id: "6",
+        name: "Gandhi Hospital",
+        vicinity: "Musheerabad, Hyderabad"
+      },
+      {
+        place_id: "7",
+        name: "Osmania General Hospital",
+        vicinity: "Afzal Gunj, Hyderabad"
+      },
+      {
+        place_id: "8",
+        name: "Sunshine Hospital",
+        vicinity: "Paradise, Secunderabad"
+      }
+    ];
 
-  if (status !== "granted") {
-    alert("Location permission required");
-    return;
-  }
-
-  const location = await Location.getCurrentPositionAsync({});
-
-  const lat = location.coords.latitude;
-  const lng = location.coords.longitude;
-
-  console.log("Location:", lat, lng);
-
-    const url =
-  `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=5000&type=hospital&key=${process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY}`;
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    console.log("API DATA:", data);
-
-    setHospitals(data.results || []);
+    setHospitals(demoHospitals);
   };
-    const filtered = hospitals.filter((h) =>
+  const filtered = hospitals.filter((h) =>
       h.name.toLowerCase().includes(search.toLowerCase())
     );
 
@@ -166,7 +213,9 @@ export default function Hospitals() {
           onPress={() =>
             router.push({
               pathname: "/report",
-              params: { hospital: JSON.stringify(item) }
+              params: { hospital: JSON.stringify(item),
+                patient: patient
+               }
             })
           }
         >

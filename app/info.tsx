@@ -136,14 +136,14 @@ export default function Info() {
       </ScrollView>
         <View style={styles.vitalsCard}>
 
-      <Text style={styles.sectionTitle}>Emergency Assessment</Text>
+        <Text style={styles.sectionTitle}>Emergency Assessment</Text>
 
-      <TextInput
-        placeholder="Condition (e.g. Chest Pain)"
-        style={styles.input}
-        value={condition}
-        onChangeText={setCondition}
-      />
+        <TextInput
+          placeholder="Condition (e.g. Chest Pain)"
+          style={styles.input}
+          value={condition}
+          onChangeText={setCondition}
+        />
 
       <TextInput
         placeholder="Severity (Serious / Moderate / Stable)"
@@ -183,17 +183,17 @@ export default function Info() {
     </View>
 
 
-      <View style={styles.bottomBar}>
+        <View style={styles.bottomBar}>
 
-        <TouchableOpacity style={styles.emergencyBtn} onPress={alertEmergency}>
-          <Text style={styles.btnText}>🚑 ALERT EMERGENCY</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.emergencyBtn} onPress={alertEmergency}>
+            <Text style={styles.btnText}>🚑 ALERT EMERGENCY</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.hospitalBtn} onPress={alertHospital}>
-          <Text style={styles.btnText}>🏥 ALERT HOSPITAL</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.hospitalBtn} onPress={alertHospital}>
+            <Text style={styles.btnText}>🏥 ALERT HOSPITAL</Text>
+          </TouchableOpacity>
 
-      </View>
+        </View>
 
       </View>
     </SafeAreaView>

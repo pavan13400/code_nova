@@ -1,107 +1,75 @@
-import { useLocalSearchParams } from "expo-router";
+import { CameraView, useCameraPermissions } from "expo-camera";
+import { useRouter } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 
-export default function Alert() {
+export default function Scanner() {
 
-  const { patient } = useLocalSearchParams();
-  const data = JSON.parse(patient as string);
+  const router = useRouter();
+  const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
 
-  const [message, setMessage] = useState(
-    `🚑 Emergency Alert\n\n${data.name} has been injured and is being taken to hospital.\nPlease contact immediately.`
-  );
-
-  const sendSMS = async () => {
-
-  try {
-
-    const res = await fetch("http://192.168.26.1/send-alert", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        phone: data.phone,
-        message
-      })
-    });
-
-    const result = await res.json();
-
-    alert(result.status);
-
-  } catch (err) {
-
-    console.log(err);
-    alert("Cannot reach server. Make sure backend is running.");
-
+  if (!permission) {
+    return <Text>Requesting permission...</Text>;
   }
 
-};
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+        <Text>Camera permission is required</Text>
+        <Button title="Grant Permission" onPress={requestPermission} />
+      </View>
+    );
+  }
+
+  const handleBarCodeScanned = ({ data }) => {
+    setScanned(true);
+
+    try {
+      const parsed = JSON.parse(data);
+
+      router.push({
+        pathname: "/info",
+        params: { patient: JSON.stringify(parsed) }
+      });
+
+    } catch {
+      alert("Invalid QR Code");
+      setScanned(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-
-      <Text style={styles.title}>Emergency Alert</Text>
-
-      <Text style={styles.subtitle}>
-        Send alert to family member
-      </Text>
-
-      <TextInput
-        style={styles.message}
-        multiline
-        value={message}
-        onChangeText={setMessage}
+      <CameraView
+        style={StyleSheet.absoluteFillObject}
+        barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
       />
 
-      <TouchableOpacity style={styles.button} onPress={sendSMS}>
-        <Text style={styles.btnText}>Send SMS Alert</Text>
-      </TouchableOpacity>
+      <View style={styles.overlay}>
+        <Text style={styles.scanText}>Scan Patient QR</Text>
+      </View>
 
+      {scanned && (
+        <Button title="Scan Again" onPress={() => setScanned(false)} />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
 
-  container:{
-    flex:1,
-    padding:20,
-    backgroundColor:"#F4F6FA"
+  overlay: {
+    position: "absolute",
+    top: 70,
+    alignSelf: "center",
   },
 
-  title:{
-    fontSize:26,
-    fontWeight:"700",
-    marginBottom:10
+  scanText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "700",
   },
-
-  subtitle:{
-    color:"#6B7280",
-    marginBottom:20
-  },
-
-  message:{
-    backgroundColor:"white",
-    borderRadius:12,
-    padding:15,
-    height:140,
-    textAlignVertical:"top",
-    marginBottom:20
-  },
-
-  button:{
-    backgroundColor:"#EF4444",
-    padding:16,
-    borderRadius:14,
-    alignItems:"center"
-  },
-
-  btnText:{
-    color:"white",
-    fontWeight:"700",
-    fontSize:16
-  }
-
 });
