@@ -213,9 +213,10 @@ export default function Hospitals() {
           onPress={() =>
             router.push({
               pathname: "/report",
-              params: { hospital: JSON.stringify(item),
-                patient: patient
-               }
+              params: {
+                hospital: JSON.stringify(item),
+                patient: JSON.stringify(JSON.parse(patient))
+              }
             })
           }
         >

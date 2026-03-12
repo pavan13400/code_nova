@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Report() {
 
@@ -22,97 +23,211 @@ export default function Report() {
     console.log("Patient:", patientData);
   }, []);
 
-  const submitReport = () => {
+  // const submitReport = () => {
+  //   const report = {
+  //     hospital: hospitalData,
+  //     patient: patientData
+  //   };
+
+  //   console.log("SUBMITTING REPORT:", report);
+
+  //   Alert.alert("Report Submitted", "Emergency report sent successfully");
+  // };
+  // const submitReport = async () => {
+
+  // const report = {
+  // name: patientData.name,
+  // age: patientData.age,
+  // blood: patientData.bloodGroup,
+
+  // allergies: patientData.allergies || [],
+  // meds: patientData.medications || [],
+  // surgeries: patientData.medicalHistory || [],
+  // contacts: [patientData.phone, patientData.emergencyContact],
+
+  // bp: patientData.bp,
+  // pulse: patientData.heartRate,
+  // severity: patientData.severity,
+
+  // hospital:{
+  // h_name: hospitalData.name,
+  // vicinity: hospitalData.vicinity
+  // }
+
+  // };
+
+  // try{
+
+  // await fetch("http://192.168.44.1:5000/report",{
+  // method:"POST",
+  // headers:{
+  // "Content-Type":"application/json"
+  // },
+  // body: JSON.stringify(report)
+  // });
+
+  // Alert.alert("Success","Report stored in MongoDB");
+
+  // }catch(err){
+
+  // Alert.alert("Error","Failed to send report");
+
+  // }
+
+  // };
+  const submitReport = async () => {
+
+  console.log("BUTTON CLICKED");
+
+  console.log("Hospital Data:", hospitalData);
+  console.log("Patient Data:", patientData);
 
     const report = {
-      hospital: hospitalData,
-      patient: patientData
+      name: patientData?.name,
+      age: patientData?.age,
+      blood: patientData?.blood,
+
+      allergies: patientData?.allergies || [],
+      meds: patientData?.meds || [],
+      surgeries: patientData?.surgeries || [],
+      contacts: patientData?.contacts || [],
+      // contacts: [patientData?.phone, patientData?.emergencyContact],
+
+      bp: patientData?.bp,
+      // pulse: patientData?.heartRate,
+      pulse: patientData?.heartRate || patientData?.pulse,
+      severity: patientData?.severity,
+
+      hospital:{
+        h_name: hospitalData?.name,
+        vicinity: hospitalData?.vicinity
+      }
     };
 
-    console.log("SUBMITTING REPORT:", report);
+    console.log("FINAL REPORT OBJECT:");
+    console.log(JSON.stringify(report, null, 2));
 
-    Alert.alert("Report Submitted", "Emergency report sent successfully");
+    try {
+
+      console.log("Sending request to server...");
+
+      const response = await fetch("http://192.168.1.7:5000/patient",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify(report)
+      });
+
+      console.log("SERVER RESPONSE:", response);
+      console.log("REPORT PATIENT DATA:", patientData);
+
+      const data = await response.json();
+
+      console.log("SERVER DATA:", data);
+
+      Alert.alert("Success","Report stored in MongoDB");
+
+    } catch(err) {
+
+      console.log("ERROR OCCURRED:");
+      console.log(err);
+
+      Alert.alert("Error","Failed to send report");
+    }
+
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={{flex:1}}>
+      <ScrollView style={styles.container}>
 
-      <Text style={styles.title}>🚑 Emergency Medical Report</Text>
+        <Text style={styles.title}>🚑 Emergency Medical Report</Text>
 
-      {/* Hospital Info */}
-      {hospitalData && (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Hospital</Text>
-          <Text style={styles.value}>{hospitalData.name}</Text>
-          <Text style={styles.sub}>{hospitalData.vicinity}</Text>
-        </View>
-      )}
+        {/* Hospital Info */}
+        {hospitalData && (
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Hospital</Text>
+            <Text style={styles.value}>{hospitalData.name}</Text>
+            <Text style={styles.sub}>{hospitalData.vicinity}</Text>
+          </View>
+        )}
 
-      {/* Patient Info */}
-      {patientData && (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Patient Details</Text>
+        {/* Patient Info */}
+        {patientData && (
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Patient Details</Text>
 
-          <Text style={styles.label}>Name</Text>
-          <Text style={styles.value}>{patientData.name}</Text>
+            <Text style={styles.label}>Name</Text>
+            <Text style={styles.value}>{patientData.name}</Text>
 
-          <Text style={styles.label}>Blood Group</Text>
-          <Text style={styles.value}>{patientData.bloodGroup}</Text>
+            <Text style={styles.label}>Blood Group</Text>
+            <Text style={styles.value}>{patientData.blood}</Text>
 
-          <Text style={styles.label}>Phone</Text>
-          <Text style={styles.value}>{patientData.phone}</Text>
+            {/* <Text style={styles.label}>Phone</Text>
+            <Text style={styles.value}>{patientData.phone}</Text>
 
-          <Text style={styles.label}>Emergency Contact</Text>
-          <Text style={styles.value}>{patientData.emergencyContact}</Text>
+            <Text style={styles.label}>Emergency Contact</Text>
+            <Text style={styles.value}>{patientData.emergencyContact}</Text> */}
+            <Text style={styles.label}>Phone</Text>
+            <Text style={styles.value}>
+            {patientData.contacts?.[0] || "N/A"}
+            </Text>
 
-          <Text style={styles.label}>Allergies</Text>
-          <Text style={styles.allergy}>
-            {patientData.allergies?.join(", ") || "None"}
-          </Text>
+            <Text style={styles.label}>Emergency Contact</Text>
+            <Text style={styles.value}>
+            {patientData.contacts?.[1] || "N/A"}
+            </Text>
 
-          <Text style={styles.label}>Conditions</Text>
-          <Text style={styles.value}>
-            {patientData.medicalHistory?.join(", ") || "None"}
-          </Text>
+            <Text style={styles.label}>Allergies</Text>
+            <Text style={styles.allergy}>
+              {patientData.allergies?.join(", ") || "None"}
+            </Text>
 
-          <Text style={styles.label}>Medications</Text>
-          <Text style={styles.value}>
-            {patientData.medications?.join(", ") || "None"}
-          </Text>
-        </View>
-      )}
+            <Text style={styles.label}>Conditions</Text>
+            <Text style={styles.value}>
+            {patientData.surgeries?.join(", ") || "None"}
+            </Text>
 
-      {/* Assessment */}
-      {patientData && (
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Emergency Assessment</Text>
+            <Text style={styles.label}>Medications</Text>
+            <Text style={styles.value}>
+            {patientData.meds?.join(", ") || "None"}
+            </Text>
+          </View>
+        )}
 
-          <Text style={styles.label}>Condition</Text>
-          <Text style={styles.value}>{patientData.condition}</Text>
+        {/* Assessment */}
+        {patientData && (
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>Emergency Assessment</Text>
 
-          <Text style={styles.label}>Severity</Text>
-          <Text style={styles.value}>{patientData.severity}</Text>
+            <Text style={styles.label}>Condition</Text>
+            <Text style={styles.value}>{patientData.condition}</Text>
 
-          <Text style={styles.label}>Blood Pressure</Text>
-          <Text style={styles.value}>{patientData.bp}</Text>
+            <Text style={styles.label}>Severity</Text>
+            <Text style={styles.value}>{patientData.severity}</Text>
 
-          <Text style={styles.label}>Heart Rate</Text>
-          <Text style={styles.value}>{patientData.heartRate}</Text>
+            <Text style={styles.label}>Blood Pressure</Text>
+            <Text style={styles.value}>{patientData.bp}</Text>
 
-          <Text style={styles.label}>Oxygen</Text>
-          <Text style={styles.value}>{patientData.oxygen}</Text>
+            <Text style={styles.label}>Heart Rate</Text>
+            <Text style={styles.value}>{patientData.heartRate}</Text>
 
-          <Text style={styles.label}>Notes</Text>
-          <Text style={styles.value}>{patientData.notes}</Text>
-        </View>
-      )}
+            <Text style={styles.label}>Oxygen</Text>
+            <Text style={styles.value}>{patientData.oxygen}</Text>
 
-      {/* Submit Button */}
-      <TouchableOpacity style={styles.submitBtn} onPress={submitReport}>
-        <Text style={styles.submitText}>Submit Report</Text>
-      </TouchableOpacity>
+            <Text style={styles.label}>Notes</Text>
+            <Text style={styles.value}>{patientData.notes}</Text>
+          </View>
+        )}
 
-    </ScrollView>
+        {/* Submit Button */}
+        <TouchableOpacity style={styles.submitBtn} onPress={submitReport}>
+          <Text style={styles.submitText}>Submit Report</Text>
+        </TouchableOpacity>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
