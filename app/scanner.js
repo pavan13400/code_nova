@@ -20,30 +20,25 @@ export default function ScannerScreen() {
 
   // --- SCAN LOGIC ---
   // const onScan = ({ data }) => {
+  // try {
+
+  //   let parsedData;
+
   //   try {
+  //     // try decrypting first
   //     const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
   //     const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-  //     if (!originalText) {
-  //       throw new Error("Decryption failed");
+  //     if (originalText) {
+  //       parsedData = JSON.parse(originalText);
+  //     } else {
+  //       throw new Error("Not encrypted");
   //     }
-      
-  //     setScannedResult(JSON.parse(originalText));
-  //   } catch (e) {
-  //     Alert.alert("Scan Error", "Invalid Medical QR Code.");
-  //     // We do not stop scanning here so they can try again.
-  //   }
-  // };
-  // const onScan = ({ data }) => {
-  // try {
-  //   const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
-  //   const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-  //   if (!originalText) {
-  //     throw new Error("Decryption failed");
+  //   } catch {
+  //     // fallback if QR is plain JSON
+  //     parsedData = JSON.parse(data);
   //   }
-
-  //   const parsedData = JSON.parse(originalText);
 
   //     router.push({
   //       pathname: "/info",
@@ -56,26 +51,53 @@ export default function ScannerScreen() {
   //     Alert.alert("Scan Error", "Invalid Medical QR Code.");
   //   }
   // };
-  const onScan = ({ data }) => {
-  try {
+//   const onScan = ({ data }) => {
+//   try {
+//     const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
+//     const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-    let parsedData;
+//     if (!originalText) {
+//       throw new Error("Invalid QR");
+//     }
 
+//     const parsedData = JSON.parse(originalText);
+
+//     const patientData = {
+//       name: parsedData.name || "Unknown",
+//       age: parsedData.age || "N/A",
+//       blood: parsedData.blood || "N/A",
+//       phone: parsedData.phone || "N/A",
+//       emergencyContact: parsedData.emergencyContact || "N/A",
+//       allergies: parsedData.allergies || [],
+//       conditions: parsedData.conditions || [],
+//       medications: parsedData.meds || [],
+//       surgeries: parsedData.surgeries || []
+//     };
+
+//     router.push({
+//       pathname: "/info",
+//       params: {
+//         patient: JSON.stringify(patientData)
+//       }
+//     });
+
+//   } catch (e) {
+//     Alert.alert("Scan Error", "Invalid Medical QR Code.");
+//   }
+// };
+const onScan = ({ data }) => {
     try {
-      // try decrypting first
+
+      console.log("RAW QR DATA:", data);
+
       const bytes = CryptoJS.AES.decrypt(data, SECRET_KEY);
       const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
-      if (originalText) {
-        parsedData = JSON.parse(originalText);
-      } else {
-        throw new Error("Not encrypted");
-      }
+      console.log("DECRYPTED TEXT:", originalText);
 
-    } catch {
-      // fallback if QR is plain JSON
-      parsedData = JSON.parse(data);
-    }
+      const parsedData = JSON.parse(originalText);
+
+      console.log("PARSED QR OBJECT:", parsedData);
 
       router.push({
         pathname: "/info",
@@ -85,6 +107,7 @@ export default function ScannerScreen() {
       });
 
     } catch (e) {
+      console.log("SCAN ERROR:", e);
       Alert.alert("Scan Error", "Invalid Medical QR Code.");
     }
   };
