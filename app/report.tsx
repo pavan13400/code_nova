@@ -11,17 +11,29 @@ export default function Report() {
   let hospitalData:any = null;
 
   try {
-    if (patient) patientData = JSON.parse(patient as string);
+    if (patient) {
+      try{
+        patientData = JSON.parse(patient as string);
+      }catch(e){
+        console.log("Patient parse error",e);
+      }
+    }
     if (hospital) hospitalData = JSON.parse(hospital as string);
   } catch {
     patientData = null;
   }
 
+  // useEffect(() => {
+  //   console.log("===== REPORT DATA =====");
+  //   console.log("Hospital:", hospitalData);
+  //   console.log("Patient:", patientData);
+  // }, []);
+
   useEffect(() => {
-    console.log("===== REPORT DATA =====");
-    console.log("Hospital:", hospitalData);
-    console.log("Patient:", patientData);
-  }, []);
+  console.log("===== REPORT DATA =====");
+  console.log("Hospital:", hospitalData);
+  console.log("Patient:", patientData);
+}, [patientData, hospitalData]);
 
   // const submitReport = () => {
   //   const report = {
@@ -322,11 +334,6 @@ const submitReport = async () => {
             {patientData.contacts?.[0] || "N/A"}
             </Text>
 
-            <Text style={styles.label}>Emergency Contact</Text>
-            <Text style={styles.value}>
-            {patientData.contacts?.[1] || "N/A"}
-            </Text>
-
             <Text style={styles.label}>Allergies</Text>
             <Text style={styles.allergy}>
               {patientData.allergies?.join(", ") || "None"}
@@ -336,7 +343,10 @@ const submitReport = async () => {
             <Text style={styles.value}>
             {patientData.surgeries?.join(", ") || "None"}
             </Text>
-
+            <Text style={styles.label}>Insurance</Text>
+              <Text style={styles.value}>
+              {patientData.insurance?.provider || "None"}
+              </Text>
             <Text style={styles.label}>Medications</Text>
             <Text style={styles.value}>
             {patientData.meds?.join(", ") || "None"}
@@ -359,7 +369,9 @@ const submitReport = async () => {
             <Text style={styles.value}>{patientData.bp}</Text>
 
             <Text style={styles.label}>Heart Rate</Text>
-            <Text style={styles.value}>{patientData.heartRate}</Text>
+            <Text style={styles.value}>
+            {patientData.heartRate || patientData.pulse || "N/A"}
+            </Text>
 
             <Text style={styles.label}>Oxygen</Text>
             <Text style={styles.value}>{patientData.oxygen}</Text>

@@ -360,8 +360,20 @@ export default function Info() {
   const [oxygen, setOxygen] = useState("");
   const [notes, setNotes] = useState("");
 
-  const { patient } = useLocalSearchParams();
-  const data = JSON.parse(patient);
+  // const { patient } = useLocalSearchParams();
+  // const data = JSON.parse(patient);
+  const params = useLocalSearchParams();
+
+  console.log("INFO PARAMS:", params);
+
+  let data = {};
+
+  try {
+    data = JSON.parse(params.patient);
+    console.log("INFO DATA:", data);
+  } catch (err) {
+    console.log("INFO PARSE ERROR:", err);
+  }
 
   console.log("INFO SCREEN DATA:", data);
 
@@ -554,6 +566,12 @@ export default function Info() {
                 {data.contacts?.length > 1
                   ? data.contacts[1]
                   : data.contacts?.[0] || "N/A"}
+              </Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Insurance</Text>
+              <Text style={styles.value}>
+                {data.insurance?.provider || "None"}
               </Text>
             </View>
 
