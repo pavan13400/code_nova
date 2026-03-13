@@ -1,12 +1,12 @@
-import { useLocalSearchParams } from "expo-router";
-import { useEffect } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 export default function Report() {
 
   const { patient, hospital } = useLocalSearchParams();
-
+  const router = useRouter();
+  const [loading,setLoading] = useState(false);
   let patientData:any = null;
   let hospitalData:any = null;
 
@@ -75,68 +75,216 @@ export default function Report() {
   // }
 
   // };
-  const submitReport = async () => {
+  // const submitReport = async () => {
 
-  console.log("BUTTON CLICKED");
+  // console.log("BUTTON CLICKED");
 
-  console.log("Hospital Data:", hospitalData);
-  console.log("Patient Data:", patientData);
+  // console.log("Hospital Data:", hospitalData);
+  // console.log("Patient Data:", patientData);
 
-    const report = {
-      name: patientData?.name,
-      age: patientData?.age,
-      blood: patientData?.blood,
+  //   const report = {
+  //     name: patientData?.name,
+  //     age: patientData?.age,
+  //     blood: patientData?.blood,
 
-      allergies: patientData?.allergies || [],
-      meds: patientData?.meds || [],
-      surgeries: patientData?.surgeries || [],
-      contacts: patientData?.contacts || [],
-      // contacts: [patientData?.phone, patientData?.emergencyContact],
+  //     allergies: patientData?.allergies || [],
+  //     meds: patientData?.meds || [],
+  //     surgeries: patientData?.surgeries || [],
+  //     contacts: patientData?.contacts || [],
+  //     // contacts: [patientData?.phone, patientData?.emergencyContact],
 
-      bp: patientData?.bp,
-      // pulse: patientData?.heartRate,
-      pulse: patientData?.heartRate || patientData?.pulse,
-      severity: patientData?.severity,
+  //     bp: patientData?.bp,
+  //     // pulse: patientData?.heartRate,
+  //     pulse: patientData?.heartRate || patientData?.pulse,
+  //     severity: patientData?.severity,
 
-      hospital:{
-        h_name: hospitalData?.name,
-        vicinity: hospitalData?.vicinity
+  //     hospital:{
+  //       h_name: hospitalData?.name,
+  //       vicinity: hospitalData?.vicinity
+  //     }
+  //   };
+
+  //   console.log("FINAL REPORT OBJECT:");
+  //   console.log(JSON.stringify(report, null, 2));
+
+  //   try {
+
+  //     console.log("Sending request to server...");
+
+  //     const response = await fetch("http://192.168.1.7:5000/patient",{
+  //       method:"POST",
+  //       headers:{
+  //         "Content-Type":"application/json"
+  //       },
+  //       body: JSON.stringify(report)
+  //     });
+
+  //     console.log("SERVER RESPONSE:", response);
+  //     console.log("REPORT PATIENT DATA:", patientData);
+
+  //     const data = await response.json();
+
+  //     console.log("SERVER DATA:", data);
+
+  //     Alert.alert("Success","Report stored in MongoDB");
+
+  //   } catch(err) {
+
+  //     console.log("ERROR OCCURRED:");
+  //     console.log(err);
+
+  //     Alert.alert("Error","Failed to send report");
+  //   }
+
+  // };
+//   const submitReport = async () => {
+
+//   const report = {
+//     name: patientData?.name,
+//     age: patientData?.age,
+//     blood: patientData?.blood,
+
+//     allergies: patientData?.allergies || [],
+//     meds: patientData?.meds || [],
+//     surgeries: patientData?.surgeries || [],
+//     contacts: patientData?.contacts || [],
+
+//     bp: patientData?.bp,
+//     pulse: patientData?.heartRate || patientData?.pulse,
+//     severity: patientData?.severity,
+
+//     hospital:{
+//       h_name: hospitalData?.name,
+//       vicinity: hospitalData?.vicinity
+//     }
+//   };
+
+//   try {
+
+//     const response = await fetch("http://192.168.1.7:5000/patient",{
+//       method:"POST",
+//       headers:{
+//         "Content-Type":"application/json"
+//       },
+//       body: JSON.stringify(report)
+//     });
+
+//     const data = await response.json();
+
+//     console.log("SERVER DATA:", data);
+
+//     // SUCCESS ALERT WITH REDIRECT
+//     Alert.alert(
+//       "✅ Report Submitted",
+//       "Emergency report sent successfully",
+//       [
+//         {
+//           text:"OK",
+//           onPress: () => router.replace("/") // go back to index.tsx
+//         }
+//       ]
+//     );
+
+//   } catch(err) {
+
+//     console.log(err);
+
+//     Alert.alert("Error","Failed to send report");
+
+//   }
+
+// };
+const submitReport = async () => {
+
+  console.log("===== SUBMIT BUTTON CLICKED =====");
+
+      const report = {
+        name: patientData?.name,
+        age: patientData?.age,
+        blood: patientData?.blood,
+        allergies: patientData?.allergies || [],
+        meds: patientData?.meds || [],
+        surgeries: patientData?.surgeries || [],
+        contacts: patientData?.contacts || [],
+        bp: patientData?.bp,
+        pulse: patientData?.heartRate || patientData?.pulse,
+        severity: patientData?.severity,
+        hospital:{
+          h_name: hospitalData?.name,
+          vicinity: hospitalData?.vicinity
+        }
+      };
+
+      console.log("REPORT OBJECT:");
+      console.log(JSON.stringify(report,null,2));
+
+      try {
+
+        setLoading(true);
+
+        console.log("Sending request to server...");
+        console.log("URL: http://192.168.1.7:5000/patient");
+
+        // const response = await fetch("http://192.168.1.7:5000/patient",{
+        //   method:"POST",
+        //   headers:{
+        //     "Content-Type":"application/json"
+        //   },
+        //   body: JSON.stringify(report)
+        // });
+        const controller = new AbortController();
+        const timeout = setTimeout(()=>controller.abort(),8000);
+
+        const response = await fetch("http://192.168.0.33:5000/patient",{
+          method:"POST",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body: JSON.stringify(report),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+
+        console.log("SERVER RESPONSE STATUS:",response.status);
+
+        const text = await response.text();
+        console.log("RAW SERVER RESPONSE:",text);
+
+        let data;
+
+        try{
+          data = JSON.parse(text);
+          console.log("PARSED SERVER DATA:",data);
+        }catch{
+          console.log("Response is not JSON");
+        }
+
+        setLoading(false);
+
+        Alert.alert(
+          "✅ Report Submitted",
+          "Emergency report sent successfully",
+          [
+            {
+              text:"OK",
+              onPress: () => router.replace("/")
+            }
+          ]
+        );
+
+      } catch(err) {
+
+        setLoading(false);
+
+        console.log("===== FETCH ERROR =====");
+        console.log(err);
+
+        Alert.alert("Error","Failed to send report");
+
       }
+
     };
-
-    console.log("FINAL REPORT OBJECT:");
-    console.log(JSON.stringify(report, null, 2));
-
-    try {
-
-      console.log("Sending request to server...");
-
-      const response = await fetch("http://192.168.1.7:5000/patient",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify(report)
-      });
-
-      console.log("SERVER RESPONSE:", response);
-      console.log("REPORT PATIENT DATA:", patientData);
-
-      const data = await response.json();
-
-      console.log("SERVER DATA:", data);
-
-      Alert.alert("Success","Report stored in MongoDB");
-
-    } catch(err) {
-
-      console.log("ERROR OCCURRED:");
-      console.log(err);
-
-      Alert.alert("Error","Failed to send report");
-    }
-
-  };
 
   return (
     <SafeAreaView style={{flex:1}}>
@@ -222,9 +370,18 @@ export default function Report() {
         )}
 
         {/* Submit Button */}
-        <TouchableOpacity style={styles.submitBtn} onPress={submitReport}>
+        {/* <TouchableOpacity style={styles.submitBtn} onPress={submitReport}>
           <Text style={styles.submitText}>Submit Report</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={styles.submitBtn} onPress={submitReport} disabled={loading}>
+
+      {loading ? (
+        <ActivityIndicator size="small" color="white"/>
+      ) : (
+        <Text style={styles.submitText}>Submit Report</Text>
+      )}
+
+    </TouchableOpacity>
 
       </ScrollView>
     </SafeAreaView>

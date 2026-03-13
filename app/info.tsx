@@ -395,11 +395,139 @@ export default function Info() {
 
   };
 
+  // return (
+  //   <SafeAreaView style={styles.safe}>
+  //     <View style={styles.container}>
+
+  //       <ScrollView contentContainerStyle={styles.scroll}>
+
+  //         <Text style={styles.title}>Patient Information</Text>
+
+  //         <View style={styles.card}>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Name</Text>
+  //             <Text style={styles.value}>{data.name || "Unknown"}</Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Age</Text>
+  //             <Text style={styles.value}>{data.age || "N/A"}</Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Blood Group</Text>
+  //             <Text style={styles.value}>{data.blood || "N/A"}</Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Emergency Contact</Text>
+  //             <Text style={styles.value}>
+  //               {data.contacts?.length > 1
+  //                 ? data.contacts[1]
+  //                 : data.contacts?.[0] || "N/A"}
+  //             </Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Allergies</Text>
+  //             <Text style={styles.value}>
+  //               {data.allergies?.length > 0
+  //                 ? data.allergies.join(", ")
+  //                 : "None"}
+  //             </Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Medications</Text>
+  //             <Text style={styles.value}>
+  //               {data.meds?.length > 0
+  //                 ? data.meds.join(", ")
+  //                 : "None"}
+  //             </Text>
+  //           </View>
+
+  //           <View style={styles.row}>
+  //             <Text style={styles.label}>Surgeries</Text>
+  //             <Text style={styles.value}>
+  //               {data.surgeries?.length > 0
+  //                 ? data.surgeries.join(", ")
+  //                 : "None"}
+  //             </Text>
+  //           </View>
+
+  //         </View>
+
+  //       </ScrollView>
+
+  //       <View style={styles.vitalsCard}>
+
+  //         <Text style={styles.sectionTitle}>Emergency Assessment</Text>
+
+  //         <TextInput
+  //           placeholder="Condition (e.g. Chest Pain)"
+  //           style={styles.input}
+  //           value={condition}
+  //           onChangeText={setCondition}
+  //         />
+
+  //         <TextInput
+  //           placeholder="Severity (Serious / Moderate / Stable)"
+  //           style={styles.input}
+  //           value={severity}
+  //           onChangeText={setSeverity}
+  //         />
+
+  //         <TextInput
+  //           placeholder="Blood Pressure (120/80)"
+  //           style={styles.input}
+  //           value={bp}
+  //           onChangeText={setBp}
+  //         />
+
+  //         <TextInput
+  //           placeholder="Heart Rate (bpm)"
+  //           style={styles.input}
+  //           value={heartRate}
+  //           onChangeText={setHeartRate}
+  //         />
+
+  //         <TextInput
+  //           placeholder="Oxygen Level SpO2 (%)"
+  //           style={styles.input}
+  //           value={oxygen}
+  //           onChangeText={setOxygen}
+  //         />
+
+  //         <TextInput
+  //           placeholder="Additional Notes"
+  //           style={styles.input}
+  //           value={notes}
+  //           onChangeText={setNotes}
+  //         />
+
+  //       </View>
+
+  //       <View style={styles.bottomBar}>
+
+  //         <TouchableOpacity style={styles.emergencyBtn} onPress={alertEmergency}>
+  //           <Text style={styles.btnText}>🚑 ALERT EMERGENCY</Text>
+  //         </TouchableOpacity>
+
+  //         <TouchableOpacity style={styles.hospitalBtn} onPress={alertHospital}>
+  //           <Text style={styles.btnText}>🏥 ALERT HOSPITAL</Text>
+  //         </TouchableOpacity>
+
+  //       </View>
+
+  //     </View>
+  //   </SafeAreaView>
+  // );
   return (
-    <SafeAreaView style={styles.safe}>
+  <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
 
-        <ScrollView contentContainerStyle={styles.scroll}>
+        <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
           <Text style={styles.title}>Patient Information</Text>
 
@@ -421,13 +549,6 @@ export default function Info() {
             </View>
 
             <View style={styles.row}>
-              <Text style={styles.label}>Phone</Text>
-              <Text style={styles.value}>
-                {data.contacts?.length > 0 ? data.contacts[0] : "N/A"}
-              </Text>
-            </View>
-
-            <View style={styles.row}>
               <Text style={styles.label}>Emergency Contact</Text>
               <Text style={styles.value}>
                 {data.contacts?.length > 1
@@ -439,86 +560,70 @@ export default function Info() {
             <View style={styles.row}>
               <Text style={styles.label}>Allergies</Text>
               <Text style={styles.value}>
-                {data.allergies?.length > 0
-                  ? data.allergies.join(", ")
-                  : "None"}
-              </Text>
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Medications</Text>
-              <Text style={styles.value}>
-                {data.meds?.length > 0
-                  ? data.meds.join(", ")
-                  : "None"}
-              </Text>
-            </View>
-
-            <View style={styles.row}>
-              <Text style={styles.label}>Surgeries</Text>
-              <Text style={styles.value}>
-                {data.surgeries?.length > 0
-                  ? data.surgeries.join(", ")
-                  : "None"}
+                {data.allergies?.length > 0 ? data.allergies.join(", ") : "None"}
               </Text>
             </View>
 
           </View>
 
+          {/* EMERGENCY ASSESSMENT MOVED INSIDE SCROLL */}
+
+          <View style={styles.vitalsCard}>
+
+            <Text style={styles.sectionTitle}>Emergency Assessment</Text>
+
+            <TextInput
+              placeholder="Condition (e.g. Chest Pain)"
+              style={styles.input}
+              value={condition}
+              onChangeText={setCondition}
+            />
+
+            <TextInput
+              placeholder="Severity (Serious / Moderate / Stable)"
+              style={styles.input}
+              value={severity}
+              onChangeText={setSeverity}
+            />
+
+            <TextInput
+              placeholder="Blood Pressure (120/80)"
+              style={styles.input}
+              value={bp}
+              onChangeText={setBp}
+            />
+
+            <TextInput
+              placeholder="Heart Rate (bpm)"
+              style={styles.input}
+              value={heartRate}
+              onChangeText={setHeartRate}
+            />
+
+            <TextInput
+              placeholder="Oxygen Level SpO2 (%)"
+              style={styles.input}
+              value={oxygen}
+              onChangeText={setOxygen}
+            />
+
+            <TextInput
+              placeholder="Additional Notes"
+              style={styles.input}
+              value={notes}
+              onChangeText={setNotes}
+            />
+
+          </View>
+
         </ScrollView>
 
-        <View style={styles.vitalsCard}>
-
-          <Text style={styles.sectionTitle}>Emergency Assessment</Text>
-
-          <TextInput
-            placeholder="Condition (e.g. Chest Pain)"
-            style={styles.input}
-            value={condition}
-            onChangeText={setCondition}
-          />
-
-          <TextInput
-            placeholder="Severity (Serious / Moderate / Stable)"
-            style={styles.input}
-            value={severity}
-            onChangeText={setSeverity}
-          />
-
-          <TextInput
-            placeholder="Blood Pressure (120/80)"
-            style={styles.input}
-            value={bp}
-            onChangeText={setBp}
-          />
-
-          <TextInput
-            placeholder="Heart Rate (bpm)"
-            style={styles.input}
-            value={heartRate}
-            onChangeText={setHeartRate}
-          />
-
-          <TextInput
-            placeholder="Oxygen Level SpO2 (%)"
-            style={styles.input}
-            value={oxygen}
-            onChangeText={setOxygen}
-          />
-
-          <TextInput
-            placeholder="Additional Notes"
-            style={styles.input}
-            value={notes}
-            onChangeText={setNotes}
-          />
-
-        </View>
+        {/* BUTTONS FIXED AT BOTTOM */}
 
         <View style={styles.bottomBar}>
 
           <TouchableOpacity style={styles.emergencyBtn} onPress={alertEmergency}>
-            <Text style={styles.btnText}>🚑 ALERT EMERGENCY</Text>
+            <Text style={styles.btnText}>🚑 ALERT</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.hospitalBtn} onPress={alertHospital}>

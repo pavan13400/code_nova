@@ -62,19 +62,57 @@ const patientSchema = new mongoose.Schema(
 const Patient = mongoose.model("Patient", patientSchema);
 
 /* API */
+// app.post("/patient", async (req,res)=>{
+
+//         try{
+
+//         const newPatient = new Patient(req.body);
+
+//         // await newPatient.save();
+
+//         // res.json({message:"Patient saved"});
+
+//         newPatient.save()
+//         .then(()=>console.log("Patient stored"))
+//         .catch(err=>console.log(err));
+
+//         res.json({message:"Report received"});
+
+//         }catch(err){
+//         res.status(500).json({error:err.message});
+//         }
+
+// });
+
+app.listen(5000,"0.0.0.0",()=>{
+console.log("Server running on port 5000");
+});
+
+app.get("/", (req,res)=>{
+  res.send("Server is working");
+});
+
 app.post("/patient", async (req,res)=>{
 
-try{
+    console.log("===== REQUEST RECEIVED =====");
+    console.log(req.body);
 
-const newPatient = new Patient(req.body);
+    try{
 
-await newPatient.save();
+    const newPatient = new Patient(req.body);
 
-res.json({message:"Patient saved"});
+    newPatient.save()
+    .then(()=>console.log("Saved to MongoDB"))
+    .catch(err=>console.log("Mongo Error:",err));
 
-}catch(err){
-res.status(500).json({error:err.message});
-}
+    res.json({status:"ok"});
+
+    }catch(err){
+
+    console.log("SERVER ERROR:",err);
+    res.status(500).json({error:err.message});
+
+    }
 
 });
 
